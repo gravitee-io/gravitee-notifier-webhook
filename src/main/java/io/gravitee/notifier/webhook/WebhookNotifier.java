@@ -112,7 +112,7 @@ public class WebhookNotifier extends AbstractConfigurableNotifier<WebhookNotifie
         HttpClient client = Vertx.currentContext().owner().createHttpClient(options);
 
         RequestOptions requestOpts = new RequestOptions()
-            .setURI(target.getPath())
+            .setURI(target.getPath() + (target.getQuery() != null ? "?" + target.getQuery() : ""))
             .setMethod(convert(configuration.getMethod()))
             .setFollowRedirects(true)
             .setTimeout(httpClientTimeout);
