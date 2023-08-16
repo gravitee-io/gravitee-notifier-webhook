@@ -27,6 +27,9 @@ public class HttpHeader {
 
     private String value;
 
+    //Do not remove. Useful for serialization
+    public HttpHeader() {}
+
     public HttpHeader(String name, String value) {
         this.name = name;
         this.value = value;
