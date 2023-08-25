@@ -29,11 +29,14 @@ import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * @author Aurelien PACAUD (aurelien.pacaud at graviteesource.com)
@@ -69,6 +72,38 @@ public class HttpWebhookNotifierTest extends AbstractWebhookNotifier {
     @AfterAll
     public static void afterAll() {
         wireMockServer.stop();
+    }
+
+    private static Stream<Integer> httpStatus2xxProvider() {
+        return IntStream.range(200, 300).boxed();
+    }
+
+    private static Stream<Integer> httpStatus4xxAnd5xxProvider() {
+        return IntStream.range(400, 600).boxed();
+    }
+
+    @ParameterizedTest
+    @MethodSource("httpStatus2xxProvider")
+    public void webhookUrlSuccessStatuses(int httpStatus, VertxTestContext testContext) {
+        wireMockServer.stubFor(post(urlPathEqualTo("/successStatuses")).willReturn(aResponse().withStatus(httpStatus)));
+
+        WebhookNotifierConfiguration webhookNotifierConfiguration = new WebhookNotifierConfiguration();
+        webhookNotifierConfiguration.setUrl(buildHttpWebhookURL(wireMockServer.port(), "successStatuses"));
+        webhookNotifierConfiguration.setMethod(HttpMethod.POST);
+
+        new WebhookNotifier(webhookNotifierConfiguration).doSend(new Notification(), Map.of()).handle(success(testContext));
+    }
+
+    @ParameterizedTest
+    @MethodSource("httpStatus4xxAnd5xxProvider")
+    public void webhookUrlErrorStatuses(int httpStatus, VertxTestContext testContext) {
+        wireMockServer.stubFor(post(urlPathEqualTo("/errorStatuses")).willReturn(aResponse().withStatus(httpStatus)));
+
+        WebhookNotifierConfiguration webhookNotifierConfiguration = new WebhookNotifierConfiguration();
+        webhookNotifierConfiguration.setUrl(buildHttpWebhookURL(wireMockServer.port(), "errorStatuses"));
+        webhookNotifierConfiguration.setMethod(HttpMethod.POST);
+
+        new WebhookNotifier(webhookNotifierConfiguration).doSend(new Notification(), Map.of()).handle(error(testContext));
     }
 
     @Test
@@ -133,17 +168,7 @@ public class HttpWebhookNotifierTest extends AbstractWebhookNotifier {
         webhookNotifierConfiguration.setUrl(buildHttpWebhookURL(wireMockServer.port(), "notReachable"));
         webhookNotifierConfiguration.setMethod(HttpMethod.POST);
 
-        new WebhookNotifier(webhookNotifierConfiguration)
-            .doSend(new Notification(), Map.of())
-            .handle((unused, throwable) -> {
-                if (throwable != null) {
-                    testContext.completeNow();
-                } else {
-                    testContext.failNow(new IllegalStateException("URL reachable"));
-                }
-
-                return null;
-            });
+        new WebhookNotifier(webhookNotifierConfiguration).doSend(new Notification(), Map.of()).handle(error(testContext));
     }
 
     @ParameterizedTest

@@ -36,6 +36,18 @@ public class AbstractWebhookNotifier {
         };
     }
 
+    protected static BiFunction<Void, Throwable, Object> error(VertxTestContext testContext) {
+        return (unused, throwable) -> {
+            if (throwable != null) {
+                testContext.completeNow();
+            } else {
+                testContext.failNow(new IllegalStateException("An error was expected but none has been thrown"));
+            }
+
+            return null;
+        };
+    }
+
     protected static String buildHttpWebhookURL(int port, String path) {
         return buildHttpWebhookURL("http", port, path);
     }

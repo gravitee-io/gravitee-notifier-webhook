@@ -15,7 +15,6 @@
  */
 package io.gravitee.notifier.webhook;
 
-import io.gravitee.common.http.HttpStatusCode;
 import io.gravitee.notifier.api.AbstractConfigurableNotifier;
 import io.gravitee.notifier.api.Notification;
 import io.gravitee.notifier.api.exception.NotifierException;
@@ -150,7 +149,7 @@ public class WebhookNotifier extends AbstractConfigurableNotifier<WebhookNotifie
     }
 
     private void handleSuccess(CompletableFuture<Void> future, HttpClient client, HttpClientResponse httpResponse) {
-        if (httpResponse.statusCode() == HttpStatusCode.OK_200) {
+        if (isStatus2xx(httpResponse)) {
             httpResponse.bodyHandler(buffer -> {
                 logger.info("Webhook sent!");
                 future.complete(null);
@@ -180,6 +179,10 @@ public class WebhookNotifier extends AbstractConfigurableNotifier<WebhookNotifie
             // Close client
             client.close();
         }
+    }
+
+    private static boolean isStatus2xx(HttpClientResponse httpResponse) {
+        return httpResponse.statusCode() / 100 == 2;
     }
 
     private void handleFailure(CompletableFuture<Void> future, HttpClient client, Throwable throwable) {
