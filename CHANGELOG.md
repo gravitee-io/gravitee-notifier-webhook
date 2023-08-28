@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/gravitee-io/gravitee-notifier-webhook/compare/1.1.2...1.1.3) (2023-08-28)
+
+
+### Bug Fixes
+
+* accept 2xx status instead of only 200 ([e348a30](https://github.com/gravitee-io/gravitee-notifier-webhook/commit/e348a30dec842755f6219010200056ccc844cbbd))
+
 ## [1.1.2](https://github.com/gravitee-io/gravitee-notifier-webhook/compare/1.1.1...1.1.2) (2023-08-16)
 
 
