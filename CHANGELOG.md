@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/gravitee-io/gravitee-notifier-webhook/compare/1.1.3...2.0.0) (2026-03-16)
+
+
+### chore
+
+* update project configuration ([b2628ba](https://github.com/gravitee-io/gravitee-notifier-webhook/commit/b2628bab9b705a17229500d0bfaa8d5b7de1adcf))
+
+
+### BREAKING CHANGES
+
+* requires JDK 21 and notifier-api 2.0.0
+
 ## [1.1.3](https://github.com/gravitee-io/gravitee-notifier-webhook/compare/1.1.2...1.1.3) (2023-08-28)
 
 
