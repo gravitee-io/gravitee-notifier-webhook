@@ -23,6 +23,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.*;
+import io.vertx.core.http.PoolOptions;
 import io.vertx.core.net.ProxyOptions;
 import io.vertx.core.net.ProxyType;
 import java.net.URI;
@@ -86,7 +87,7 @@ public class WebhookNotifier extends AbstractConfigurableNotifier<WebhookNotifie
             options.setSsl(true).setTrustAll(true).setVerifyHost(false);
         }
 
-        options.setMaxPoolSize(1).setKeepAlive(false).setTcpKeepAlive(false).setConnectTimeout(httpClientTimeout);
+        options.setKeepAlive(false).setTcpKeepAlive(false).setConnectTimeout(httpClientTimeout);
 
         if (configuration.isUseSystemProxy()) {
             ProxyOptions proxyOptions = new ProxyOptions();
@@ -108,7 +109,7 @@ public class WebhookNotifier extends AbstractConfigurableNotifier<WebhookNotifie
         options.setDefaultPort(target.getPort() != -1 ? target.getPort() : (HTTPS_SCHEME.equals(target.getScheme()) ? 443 : 80));
         options.setDefaultHost(target.getHost());
 
-        HttpClient client = Vertx.currentContext().owner().createHttpClient(options);
+        HttpClient client = Vertx.currentContext().owner().createHttpClient(options, new PoolOptions().setHttp1MaxSize(1));
 
         RequestOptions requestOpts = new RequestOptions()
             .setURI(target.getPath() + (target.getQuery() != null ? "?" + target.getQuery() : ""))
