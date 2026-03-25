@@ -109,7 +109,8 @@ public class WebhookNotifier extends AbstractConfigurableNotifier<WebhookNotifie
         options.setDefaultPort(target.getPort() != -1 ? target.getPort() : (HTTPS_SCHEME.equals(target.getScheme()) ? 443 : 80));
         options.setDefaultHost(target.getHost());
 
-        HttpClient client = Vertx.currentContext().owner().createHttpClient(options, new PoolOptions().setHttp1MaxSize(1));
+        PoolOptions poolOptions = new PoolOptions().setHttp1MaxSize(1).setHttp2MaxSize(1);
+        HttpClient client = Vertx.currentContext().owner().createHttpClient(options, poolOptions);
 
         RequestOptions requestOpts = new RequestOptions()
             .setURI(target.getPath() + (target.getQuery() != null ? "?" + target.getQuery() : ""))
