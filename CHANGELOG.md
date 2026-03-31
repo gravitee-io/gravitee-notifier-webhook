@@ -1,3 +1,17 @@
+# [3.0.0-alpha.1](https://github.com/gravitee-io/gravitee-notifier-webhook/compare/2.0.0...3.0.0-alpha.1) (2026-03-31)
+
+
+### Features
+
+* bump orb version ([719f8c3](https://github.com/gravitee-io/gravitee-notifier-webhook/commit/719f8c36af88ba8644cada56e7d3f0a13542e9d0))
+* bumped AM version to 4.12.0-alpha.1 ([f9b7fc0](https://github.com/gravitee-io/gravitee-notifier-webhook/commit/f9b7fc06617f2f026e6a7e07dba4e026e4643760))
+* vertx 5 upgrade, BREAKING CHANGES ([c38387c](https://github.com/gravitee-io/gravitee-notifier-webhook/commit/c38387c05d50b1295082b7279d57e4e139c558f9))
+
+
+### BREAKING CHANGES
+
+* JDK 25
+
 # [2.0.0](https://github.com/gravitee-io/gravitee-notifier-webhook/compare/1.1.3...2.0.0) (2026-03-16)
 
 
